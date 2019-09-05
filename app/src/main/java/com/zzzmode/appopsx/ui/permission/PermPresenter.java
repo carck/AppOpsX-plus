@@ -200,12 +200,8 @@ class PermPresenter {
 
   }
 
-  void switchMode(OpEntryInfo info, boolean v) {
-    if (v) {
-      info.mode = AppOpsManager.MODE_ALLOWED;
-    } else {
-      info.mode = AppOpsManager.MODE_IGNORED;
-    }
+  void switchMode(OpEntryInfo info, long v) {
+    info.mode = (int) v;
     Map<String, String> map = new HashMap<String, String>(2);
     map.put("new_mode", String.valueOf(info.mode));
     map.put("op_name", info.opName);

@@ -68,7 +68,7 @@ public class AlertInstalledPremActivity extends BaseActivity implements IPermVie
 
     adapter.setListener(new AppPermissionAdapter.OnSwitchItemClickListener() {
       @Override
-      public void onSwitch(OpEntryInfo info, boolean v) {
+      public void onSwitch(OpEntryInfo info, long v) {
 
         mPresenter.switchMode(info, v);
       }

@@ -1,6 +1,7 @@
 package com.zzzmode.appopsx.ui.main.group;
 
 import android.support.annotation.IntRange;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
@@ -8,6 +9,7 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,7 +30,7 @@ import java.util.List;
 
 class PermissionGroupAdapter extends
     AbstractExpandableItemAdapter<PermissionGroupAdapter.GroupViewHolder, PermissionGroupAdapter.ChildViewHolder> implements
-    View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+    View.OnClickListener, AdapterView.OnItemSelectedListener {
 
 
   private PermissionGroupAdapter.OnSwitchItemClickListener listener;
@@ -160,9 +162,9 @@ class PermissionGroupAdapter extends
     holder.switchCompat.setTag(R.id.groupPosition, groupPosition);
     holder.switchCompat.setTag(R.id.childPosition, childPosition);
 
-    holder.switchCompat.setOnCheckedChangeListener(null);
-    holder.switchCompat.setChecked(appPermissions.opEntryInfo.isAllowed());
-    holder.switchCompat.setOnCheckedChangeListener(this);
+    holder.switchCompat.setOnItemSelectedListener(null);
+    holder.switchCompat.setSelection(appPermissions.opEntryInfo.mode);
+    holder.switchCompat.setOnItemSelectedListener(this);
 
 
   }
@@ -208,20 +210,28 @@ class PermissionGroupAdapter extends
     }
 
     if (v.getTag() instanceof ChildViewHolder) {
-      ((ChildViewHolder) v.getTag()).switchCompat.toggle();
-    } else if (v.getId() == R.id.img_menu_ups) {
+      ((ChildViewHolder) v.getTag()).switchCompat.performClick();
+    }
+  }
+
+  @Override
+  public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+    if (adapterView.getTag() instanceof PermissionChildItem && listener != null) {
+      int groupPosition = (int) adapterView.getTag(R.id.groupPosition);
+      int childPosition = (int) adapterView.getTag(R.id.childPosition);
+      PermissionChildItem permissionChildItem = (PermissionChildItem) adapterView.getTag();
+      if(l==permissionChildItem.opEntryInfo.mode)
+          return;
+        listener.onSwitch(groupPosition, childPosition, permissionChildItem, l);
+
+    } else if (view.getId() == R.id.img_menu_ups) {
 
     }
   }
 
   @Override
-  public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-    if (buttonView.getTag() instanceof PermissionChildItem && listener != null) {
-      int groupPosition = (int) buttonView.getTag(R.id.groupPosition);
-      int childPosition = (int) buttonView.getTag(R.id.childPosition);
-      listener.onSwitch(groupPosition, childPosition, ((PermissionChildItem) buttonView.getTag()),
-          isChecked);
-    }
+  public void onNothingSelected(AdapterView<?> adapterView) {
+
   }
 
 
@@ -248,20 +258,20 @@ class PermissionGroupAdapter extends
     ImageView imgIcon;
     TextView tvName;
     TextView tvLastTime;
-    SwitchCompat switchCompat;
+    AppCompatSpinner switchCompat;
 
     public ChildViewHolder(View itemView) {
       super(itemView);
       imgIcon = (ImageView) itemView.findViewById(R.id.app_icon);
       tvName = (TextView) itemView.findViewById(R.id.app_name);
-      switchCompat = (SwitchCompat) itemView.findViewById(R.id.switch_compat);
+      switchCompat = (AppCompatSpinner) itemView.findViewById(R.id.switch_compat);
       tvLastTime = (TextView) itemView.findViewById(R.id.perm_last_time);
     }
   }
 
   interface OnSwitchItemClickListener {
 
-    void onSwitch(int groupPosition, int childPosition, PermissionChildItem item, boolean v);
+    void onSwitch(int groupPosition, int childPosition, PermissionChildItem item, long v);
   }
 
   interface OnGroupOtherClickListener {

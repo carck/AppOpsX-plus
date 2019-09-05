@@ -88,8 +88,8 @@ public class PermissionGroupActivity extends BaseActivity implements
     myItemAdapter.setListener(new PermissionGroupAdapter.OnSwitchItemClickListener() {
       @Override
       public void onSwitch(int groupPosition, int childPosition, PermissionChildItem info,
-          boolean v) {
-        mPresenter.changeMode(groupPosition, childPosition, info);
+          long v) {
+        mPresenter.changeMode(groupPosition, childPosition, info, v);
       }
     }, new PermissionGroupAdapter.OnGroupOtherClickListener() {
       @Override
@@ -255,7 +255,7 @@ public class PermissionGroupActivity extends BaseActivity implements
           PermissionChildItem info = apps.get(i);
           if (info.opEntryInfo.mode != newMode) {
             //changeMode(groupPosition, i, info);
-            mPresenter.changeMode(groupPosition,i,info);
+            mPresenter.changeMode(groupPosition,i,info, newMode);
           }
         }
       } catch (Exception e) {

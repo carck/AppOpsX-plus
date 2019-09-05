@@ -67,9 +67,9 @@ class PermGroupPresenter {
   }
 
   void changeMode(final int groupPosition, final int childPosition,
-      final PermissionChildItem info) {
+                  final PermissionChildItem info, long v) {
 
-    info.opEntryInfo.changeStatus();
+    info.opEntryInfo.mode = (int) v;
 
     Helper.setMode(context, info.appInfo.packageName, info.opEntryInfo)
         .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())

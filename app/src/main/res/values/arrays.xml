@@ -48,5 +48,12 @@
     <item>@string/install_system_action_install</item>
     <item>@string/install_system_action_uninstall</item>
   </string-array>
+  <string-array name="op_modes">
+    <item>允许</item>
+    <item>忽略</item>
+    <item>禁止</item>
+    <item>默认</item>
+    <item>询问</item>
+  </string-array>
 
 </resources>

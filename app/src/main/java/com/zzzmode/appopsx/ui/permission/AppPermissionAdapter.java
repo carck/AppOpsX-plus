@@ -1,11 +1,13 @@
 package com.zzzmode.appopsx.ui.permission;
 
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,7 +20,7 @@ import java.util.List;
  * Created by zl on 2016/11/18.
  */
 class AppPermissionAdapter extends RecyclerView.Adapter<AppPermissionAdapter.ViewHolder> implements
-    View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+    AdapterView.OnItemSelectedListener, View.OnClickListener{
 
   private List<OpEntryInfo> datas = new ArrayList<>();
 
@@ -108,9 +110,9 @@ class AppPermissionAdapter extends RecyclerView.Adapter<AppPermissionAdapter.Vie
         holder.lastTime.setVisibility(View.GONE);
       }
 
-      holder.switchCompat.setOnCheckedChangeListener(null);
-      holder.switchCompat.setChecked(opEntryInfo.isAllowed());
-      holder.switchCompat.setOnCheckedChangeListener(this);
+      holder.switchCompat.setOnItemSelectedListener(null);
+      holder.switchCompat.setSelection(opEntryInfo.mode);
+      holder.switchCompat.setOnItemSelectedListener(this);
     }
   }
 
@@ -122,16 +124,24 @@ class AppPermissionAdapter extends RecyclerView.Adapter<AppPermissionAdapter.Vie
   @Override
   public void onClick(View v) {
     if (v.getTag() instanceof ViewHolder) {
-      ((ViewHolder) v.getTag()).switchCompat.toggle();
+      ((ViewHolder) v.getTag()).switchCompat.performClick();
     }
   }
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if (adapterView.getTag() instanceof OpEntryInfo && listener != null) {
+            OpEntryInfo opEntryInfo = (OpEntryInfo) adapterView.getTag();
+            if(l==opEntryInfo.mode)
+                return;
+            listener.onSwitch(opEntryInfo, l);
 
-  @Override
-  public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-    if (buttonView.getTag() instanceof OpEntryInfo && listener != null) {
-      listener.onSwitch(((OpEntryInfo) buttonView.getTag()), isChecked);
+        }
     }
-  }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 
   static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -139,7 +149,7 @@ class AppPermissionAdapter extends RecyclerView.Adapter<AppPermissionAdapter.Vie
     TextView title;
     TextView summary;
     TextView lastTime;
-    SwitchCompat switchCompat;
+    AppCompatSpinner switchCompat;
 
     ViewHolder(View itemView) {
       super(itemView);
@@ -147,14 +157,14 @@ class AppPermissionAdapter extends RecyclerView.Adapter<AppPermissionAdapter.Vie
       title = (TextView) itemView.findViewById(android.R.id.title);
       summary = (TextView) itemView.findViewById(android.R.id.summary);
       lastTime = (TextView) itemView.findViewById(R.id.last_time);
-      switchCompat = (SwitchCompat) itemView.findViewById(R.id.switch_compat);
+      switchCompat = (AppCompatSpinner) itemView.findViewById(R.id.switch_compat);
 
     }
   }
 
   public interface OnSwitchItemClickListener {
 
-    void onSwitch(OpEntryInfo info, boolean v);
+    void onSwitch(OpEntryInfo info, long v);
   }
 
 }
