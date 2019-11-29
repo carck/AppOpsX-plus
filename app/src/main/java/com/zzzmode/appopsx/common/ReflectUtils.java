@@ -38,11 +38,11 @@ public class ReflectUtils {
       for (Object o : list) {
         int mOp = getIntFieldValue(o, "mOp");
         int mMode = getIntFieldValue(o, "mMode");
-        long mTime = getLongFieldValue(o, "mTime");
-        long mRejectTime = getLongFieldValue(o, "mRejectTime");
-        int mDuration = getIntFieldValue(o, "mDuration");
-        int mProxyUid = getIntFieldValue(o, "mProxyUid");
-        String mProxyPackageName = String.valueOf(getFieldValue(o, "mProxyPackageName"));
+        long mTime = (long) invokMethod(o, "getTime", null,null);
+        long mRejectTime = (long) invokMethod(o, "getRejectTime", null,null);
+        int mDuration = (int) invokMethod(o, "getDuration", null, null);
+        int mProxyUid = (int) invokMethod(o, "getProxyUid", null, null);
+        String mProxyPackageName = String.valueOf(invokMethod(o, "getProxyPackageName", null, null));
         if(OtherOp.isSupportCount()){
           // LineageOS
           int mAllowedCount = getIntFieldValue(o, "mAllowedCount");
